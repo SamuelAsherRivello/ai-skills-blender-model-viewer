@@ -8,7 +8,7 @@ A full-browser 3D gallery for the public [AI Skills for Blender collection](http
 
 ## Live Demo
 
-The first Pages deployment is being verified. The stable demo link will appear here after verification.
+[Open Model Viewer](https://samuelasherrivello.github.io/ai-skills-blender-model-viewer/) · [Latest release](https://github.com/SamuelAsherRivello/ai-skills-blender-model-viewer/releases/latest)
 
 ## Getting Started
 

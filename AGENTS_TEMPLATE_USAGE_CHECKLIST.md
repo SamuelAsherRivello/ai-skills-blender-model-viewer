@@ -111,7 +111,7 @@ Node/npm/Vite baseline that may be retained or replaced deliberately.
       baseline patch-only release workflow.
 - [x] Document the real release process, including versioning and deployment
       verification, in the README.
-- [ ] Confirm that the README demo URL is live before replacing its placeholder.
+- [x] Confirm that the README demo URL is live before replacing its placeholder.
 
 ## 7. Delivery gate
 
@@ -124,7 +124,7 @@ Node/npm/Vite baseline that may be retained or replaced deliberately.
       Run deployment or release verification only when authorized; otherwise
       state clearly whether it is intentionally not applicable or awaits user
       authorization.
-- [ ] Verify that README links, screenshots, commands, packages, deployment
+- [x] Verify that README links, screenshots, commands, packages, deployment
       instructions, and release instructions describe the resulting project,
       not this template.
 - [x] Verify the new repository's GitHub About description and topics match
@@ -138,4 +138,4 @@ Node/npm/Vite baseline that may be retained or replaced deliberately.
 
 ## Execution notes
 
-Created Model Viewer as a new React/Vite and Babylon.js project with a fresh template snapshot and separate GitHub origin. Node 24+, npm, public HTTP model loading, GitHub Pages, and OpenSpec were confirmed from the request and actual configuration. No environment variables or formatting script are required. Generated OpenSpec skills were retained and checked by automated tests. The user moved this chat to the project; autocomplete is a user-interface check that is not asserted by automation. Spec synchronization and archive remain a separate post-implementation action. Demo verification and final documentation are completed after the first release.
+Created Model Viewer as a new React/Vite and Babylon.js project with a fresh template snapshot and separate GitHub origin. Node 24+, npm, public HTTP model loading, GitHub Pages, and OpenSpec were confirmed from the request and actual configuration. No environment variables or formatting script are required. Generated OpenSpec skills were retained and checked by automated tests. The user moved this chat to the project; autocomplete is a user-interface check that is not asserted by automation. Spec synchronization and archive remain a separate post-implementation action. The v0.0.3 demo, release package, screenshot, and public asset loading were verified after the first release.

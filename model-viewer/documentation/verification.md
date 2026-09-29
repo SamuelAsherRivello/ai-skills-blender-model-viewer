@@ -10,4 +10,12 @@ All exports were visually reviewed in Chrome. The source camera preserves subjec
 
 Automated checks cover revision pinning, malformed catalogs, path validation, duplicate IDs, absent metadata, network failures, source refresh without rebuilding, stale selection protection, prohibited distribution fixtures, and release allocation/retry/rollback against a temporary Git remote. Browser acceptance loads public GLBs, checks metadata association and endpoint navigation, verifies animation movement and playback controls, exercises failure/retry and rapid keyboard navigation, and checks a narrow viewport.
 
-The application has no model files or copied catalog. The production build passes the distribution guard. GitHub Pages and release artifact verification are recorded below after deployment.
+The application has no model files or copied catalog. The production build passes the distribution guard.
+
+## Published application
+
+[Release v0.0.3](https://github.com/SamuelAsherRivello/ai-skills-blender-model-viewer/releases/tag/v0.0.3) was produced by the successful [manual release run](https://github.com/SamuelAsherRivello/ai-skills-blender-model-viewer/actions/runs/36601318273). The tag, release package, live `version.txt`, and rendered app all report 0.0.3. The ordinary-push Checks workflow also passed and did not deploy.
+
+The full browser suite passed both locally and against the [live Pages app](https://samuelasherrivello.github.io/ai-skills-blender-model-viewer/): three browser tests, including all 20 public assets and both animation clips. Eleven focused Node tests passed. The downloaded release contains 232 ZIP entries, no model binaries, and no detected GitHub credentials. Its SHA-256 matches GitHub's published asset digest: `b6caa577c73ae2e11bc0a2258327a7db838a61ba87c0fdb0fcb883191787376f`.
+
+Retry and rollback version allocation were tested against a disposable Git remote; no failed live deployment was deliberately induced. The published screenshot is from the live release. The large forest export is 78.40 MiB; it retains 1,240,003 rendered triangles and loads from the source repository, not the app release.

@@ -28,7 +28,7 @@
 ## 4. Release and documentation
 
 - [x] 4.1 Implement manual patch-version release workflow with serialized version allocation and matching commit/tag/release/build; verify ordinary pushes do not release and failed checks prevent deployment.
-- [ ] 4.2 Configure Pages deployment for the exact release artifact and same-version retry/rollback; verify failure recovery does not allocate an unintended patch version.
+- [x] 4.2 Configure Pages deployment for the exact release artifact and same-version retry/rollback; verify failure recovery does not allocate an unintended patch version.
 - [x] 4.3 Add distribution checks that reject model binaries and embedded credentials from the viewer repository/build/release; verify these checks fail on a deliberately introduced prohibited fixture without retaining that fixture.
 - [x] 4.4 Write project setup, model sourcing, release, and source-maintenance documentation and customize repository metadata; verify commands and source links match actual implementation.
 
@@ -36,5 +36,5 @@
 
 - [x] 5.1 Run focused tests/build and browse every current catalog entry using only public remote assets; verify render success, metadata/path association, navigation, animation where applicable, and export warning visibility.
 - [x] 5.2 Verify source catalog changes become visible on viewer reload without rebuilding the app, using controlled HTTP test responses; verify immutable asset URLs within a session.
-- [ ] 5.3 Run the first manual release and verify version agreement across tag, release, and live Pages app; confirm network requests retrieve models from the public source and shipped artifacts contain no models.
-- [ ] 5.4 Link the verified Pages URL in README and capture a current representative screenshot; verify the link, document remaining export limitations, and preserve the separate source publication SHA in delivery notes.
+- [x] 5.3 Run the first manual release and verify version agreement across tag, release, and live Pages app; confirm network requests retrieve models from the public source and shipped artifacts contain no models.
+- [x] 5.4 Link the verified Pages URL in README and capture a current representative screenshot; verify the link, document remaining export limitations, and preserve the separate source publication SHA in delivery notes.
