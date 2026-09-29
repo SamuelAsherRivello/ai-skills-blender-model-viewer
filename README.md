@@ -1,73 +1,64 @@
-<!-- AI: Keep commands rooted at the repository. The Vite application, source, tests, and build output belong in project-name/. -->
-![Samuel Asher Rivello](project-name/documentation/samuel-asher-rivello-banner.png)
+![Samuel Asher Rivello](model-viewer/documentation/samuel-asher-rivello-banner.png)
 
-# {project-name}
+# Model Viewer
 
-<!-- AI: Update this project summary when the template is used. -->
-This is the project repo....
+A full-browser 3D gallery for the public [AI Skills for Blender collection](https://github.com/SamuelAsherRivello/ai-skills-blender). Browse scenes and historical variants with Back and Next, orbit and zoom, play animations, and inspect filenames, geometry statistics, and documented metadata.
 
-## Images
-
-### Screenshots
-
-<a href="project-name/documentation/screenshot01.png"><img src="project-name/documentation/screenshot01.png" width="400" alt="Screenshot placeholder" /></a>
+![Model Viewer](model-viewer/documentation/screenshot01.png)
 
 ## Live Demo
 
-- [{live-demo-url}](https://samuelasherrivello.github.io/github-repository-template/)
-
-## Table of Contents
-
-1. [Images](#images)
-2. [Live Demo](#live-demo)
-3. [Getting Started](#getting-started)
-4. [Project Details](#project-details)
-5. [Credits](#credits)
+The first Pages deployment is being verified. The stable demo link will appear here after verification.
 
 ## Getting Started
 
-<!-- AI: Update this getting-started summary when the template is used. -->
-This is the getting started...
+Use Node.js 24 or later and npm. Run from the repository root:
 
-### 🛠 Build Project
+```sh
+npm ci
+npm run dev
+npm test
+npm run build
+npm run check:distribution
+npm run preview
+```
 
-1. From the repository root, run `npm install`.
-2. Run `npm run build`.
+Open the Vite URL at `/ai-skills-blender-model-viewer/`. Internet access and WebGL are required. No API key or environment file is needed.
 
-### 🛠 Run Project
+For full browser acceptance, install Google Chrome, then run `npm run test:browser`. This checks every current public model, error/retry states, navigation, metadata, animation controls, and a narrow viewport. Set `VIEWER_URL` to test a deployed URL instead of the local Vite server. Public assets are downloaded by the browser; none are committed or bundled.
 
-1. From the repository root, run `npm run dev` and open the localhost URL Vite prints.
-2. Run `npm test` to execute the focused source checks.
+## Model Sourcing
 
-### 🛠 Release Version
+Each page load resolves the source repository's public `main` commit once. It fetches `documentation/models/index.json` and the selected GLB at that immutable revision. Reload to discover newly published models without rebuilding the viewer. Models are sorted by full source path, so repeated filenames and historical variants remain distinct.
 
-1. Run `npm test` and `npm run build` from the repository root.
-2. Push to `main` to deploy through the GitHub Pages workflow.
-3. Run the **Release** workflow from GitHub Actions to bump the patch version, tag it, and create the GitHub release.
+The source repository owns model exports, catalog generation, and metadata extraction. See its [export maintenance guide](https://github.com/SamuelAsherRivello/ai-skills-blender/blob/main/documentation/models/README.md). The catalog records provenance for each documented value. Measured viewport statistics are shown separately. Missing metadata is omitted; remote text is rendered as plain text.
 
-## Project Details
+The viewer uses React, Vite, and Babylon.js. Camera framing comes from the source scene when available, with a bounds-based fallback. Blender lighting and compositing are replaced with neutral viewer lighting. Procedural colors/normals use baked textures; toon shading is approximated with the authored palette. Export notes disclose these differences. The largest environment uses lossless meshopt compression and can take longer to load. A failed model can be retried or skipped.
 
-<!-- AI: Update these project details when the template is used. -->
-This is the project details...
+GitHub's public API limits and network outages produce visible retry states. Model downloads use `raw.githubusercontent.com`; Babylon's public CDN supplies the lighting environment and meshopt decoder, and Google Fonts supplies typography.
 
-### 📝 Structure
+## Releases
 
-- `project-name/index.html` provides the plain safe-area HTML shell.
-- `project-name/test/` contains focused automated checks for the starter.
-- `project-name/documentation/` contains canonical README images and project
-  documentation assets.
+Normal pushes and pull requests run checks only. To publish:
 
-### 📦 AI
+1. Push reviewed changes to `main`.
+2. Run **Release** in GitHub Actions with `existing_version` blank.
+3. Tests, build, and distribution checks must pass before allocating the next patch version.
+4. The workflow commits `version.txt`, creates the matching annotated tag, builds that exact commit, uploads `release.zip`, deploys it to GitHub Pages, and publishes the release after deployment succeeds.
 
-- `AGENTS.md` contains repository-specific AI agent guidance.
-- `AGENTS_TEMPLATE_USAGE_CHECKLIST.md` contains the template reuse checklist.
-- [openspec](openspec/) contains the repository's specification workflow
-  configuration.
+The app version, `version.txt`, tag, and release agree. Pages hosts the latest successful deployment. App releases contain only the application, never models or a copied model catalog.
 
-### 📦 Packages
+Re-run a failed workflow to resume its allocated version. To retry or roll back a specific release, dispatch **Release** with its existing `vX.Y.Z` tag. This checks out that tag without allocating another patch. Source models still resolve independently from the public source on reload.
 
-- [Vite](https://vite.dev/) provides local development and production builds.
+## Project Layout
 
+- `model-viewer/src/`: React interface, catalog validation, and Babylon lifecycle.
+- `model-viewer/test/`: catalog, distribution, release-allocation, and project checks.
+- `model-viewer/browser/`: real-browser acceptance against public assets.
+- `model-viewer/scripts/`: release version allocation and distribution guard.
+- `model-viewer/documentation/`: screenshot and delivery evidence.
+- `.github/workflows/`: checks and manual release/Pages deployment.
+- `openspec/`: project constraints and feature specifications.
 
 ## Credits
 

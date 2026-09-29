@@ -1,51 +1,67 @@
 name: Release
-
 on:
   workflow_dispatch:
-
+    inputs:
+      existing_version:
+        description: "Optional existing vX.Y.Z tag to retry deployment or roll back; blank creates next patch"
+        required: false
+        type: string
 permissions:
   contents: write
-
+  pages: write
+  id-token: write
 concurrency:
-  group: release
+  group: release-pages
   cancel-in-progress: false
-
 jobs:
   release:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Check out main
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Test template
-        run: npm test
-      - name: Bump patch version
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm run check:distribution
+      - name: Allocate or resume version
         id: version
-        shell: bash
-        run: |
-          current="$(cut -d= -f2 version.txt)"
-          IFS=. read -r major minor patch <<< "$current"
-          next="$major.$minor.$((patch + 1))"
-          printf 'version=%s\n' "$next" > version.txt
-          echo "value=$next" >> "$GITHUB_OUTPUT"
-      - name: Commit and tag release
         env:
-          VERSION: ${{ steps.version.outputs.value }}
+          EXISTING_VERSION: ${{ inputs.existing_version }}
+        run: node model-viewer/scripts/release.mjs
+      - name: Install exact release dependencies
+        run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm run check:distribution
+      - name: Package exact build
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add version.txt
-          git commit -m "chore: release v$VERSION"
-          git tag "v$VERSION"
-          git push origin HEAD:main --tags
-      - name: Create GitHub release
+          cp version.txt model-viewer/dist/version.txt
+          cd model-viewer/dist
+          zip -r ../../release.zip .
+      - name: Create release draft or update existing release
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ steps.version.outputs.value }}
-        run: gh release create "v$VERSION" --generate-notes --title "v$VERSION"
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --draft --generate-notes --title "$TAG"
+          gh release upload "$TAG" release.zip --clobber
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: model-viewer/dist
+      - uses: actions/deploy-pages@v4
+        id: deployment
+      - name: Publish successful release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: gh release edit "$TAG" --draft=false

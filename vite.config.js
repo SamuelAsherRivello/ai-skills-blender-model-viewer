@@ -6,9 +6,9 @@ import { defineConfig } from "vite";
 const repositoryRoot = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  base: "/github-repository-template/",
+  base: "/ai-skills-blender-model-viewer/",
   plugins: [react()],
-  root: "project-name",
+  root: "model-viewer",
   server: {
     fs: {
       allow: [repositoryRoot],
