@@ -32,7 +32,7 @@ Resolve the public source main revision through GitHub API once per session, the
 
 Use React/Vite from the template plus Babylon.js and its GLB loader. Babylon is a proposed implementation choice suitable for scene, animation, orbit camera, and asset-container lifecycle support; Three.js would also work but adds no necessary behavior here. Mount the renderer in content_layer and React controls in ui_layer. Use a viewport-filling canvas with a compact landscape metadata panel and bottom navigation; collapse details appropriately on narrow screens. Preserve useful template corner roles without collisions. Fit an orbit camera to model bounds, provide neutral environment lighting, and retain applicable animation with predictable playback. Never stretch the scene to force an aspect ratio.
 
-Sort catalog entries by source path. Disable navigation at endpoints. Use selection generation IDs to reject stale async completions and dispose the outgoing asset container and owned resources. Render remote metadata as text, never raw HTML. Measured geometry/material/animation counts are labeled separately from documented source values.
+Sort catalog entries by source path. Wrap navigation at endpoints and support A/D and left/right arrow shortcuts. Disable navigation only when the catalog is empty or unavailable. Use selection generation IDs to reject stale async completions and dispose the outgoing asset container and owned resources. Render remote metadata as text, never raw HTML. Measured geometry/material/animation counts are labeled separately from documented source values.
 
 ### Release pipeline
 

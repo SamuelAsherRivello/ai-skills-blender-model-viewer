@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import versionText from "../../version.txt?raw";
 import { assetUrl, sourceUrl, loadCatalog, SOURCE } from "./catalog.js";
 import { createViewer } from "./viewer.js";
@@ -17,6 +17,43 @@ export function App() {
     [settingsError, setSettingsError] = useState("");
   const viewer = useRef(null),
     model = catalog?.models[index];
+  const modelCount = catalog?.models.length || 0;
+  const navigate = useCallback(
+    (direction) => {
+      if (modelCount)
+        setIndex((i) => (i + direction + modelCount) % modelCount);
+    },
+    [modelCount],
+  );
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (
+        !modelCount ||
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.isComposing ||
+        event.target?.closest?.(
+          'input, textarea, select, [contenteditable]:not([contenteditable="false"])',
+        )
+      )
+        return;
+      const key = event.key.toLowerCase();
+      const direction =
+        key === "a" || key === "arrowleft"
+          ? -1
+          : key === "d" || key === "arrowright"
+            ? 1
+            : 0;
+      if (!direction) return;
+      event.preventDefault();
+      event.stopPropagation();
+      navigate(direction);
+    };
+    // Capture before the canvas camera's arrow-key handler.
+    window.addEventListener("keydown", onKeyDown, true);
+    return () => window.removeEventListener("keydown", onKeyDown, true);
+  }, [modelCount, navigate]);
   useEffect(() => {
     const abort = new AbortController();
     setCatalogError("");
@@ -219,6 +256,7 @@ export function App() {
         <span>LIVE 3D</span>
         <p>
           Drag to orbit <i>·</i> Scroll to zoom
+          <br />A / D or ← / → to browse
         </p>
       </div>
       <div className="status" role="status" aria-live="polite">
@@ -264,8 +302,9 @@ export function App() {
         <nav aria-label="Model navigation">
           <button
             className="nav-button"
-            disabled={!catalog || index === 0}
-            onClick={() => setIndex((i) => i - 1)}
+            disabled={!modelCount}
+            aria-keyshortcuts="A ArrowLeft"
+            onClick={() => navigate(-1)}
           >
             <span aria-hidden="true">←</span> Back
           </button>
@@ -277,8 +316,9 @@ export function App() {
           </span>
           <button
             className="nav-button next"
-            disabled={!catalog || index >= catalog.models.length - 1}
-            onClick={() => setIndex((i) => i + 1)}
+            disabled={!modelCount}
+            aria-keyshortcuts="D ArrowRight"
+            onClick={() => navigate(1)}
           >
             Next <span aria-hidden="true">→</span>
           </button>

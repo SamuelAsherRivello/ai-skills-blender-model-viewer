@@ -2,7 +2,7 @@
 
 # Model Viewer
 
-A full-browser 3D gallery for the public [AI Skills for Blender collection](https://github.com/SamuelAsherRivello/ai-skills-blender). Browse scenes and historical variants with Back and Next, orbit and zoom, play animations, and inspect filenames, geometry statistics, and documented metadata.
+A full-browser 3D gallery for the public [AI Skills for Blender collection](https://github.com/SamuelAsherRivello/ai-skills-blender). Browse scenes and historical variants with Back/Next, A/D, or the left/right arrow keys, orbit and zoom, play animations, and inspect filenames, geometry statistics, and documented metadata.
 
 ![Model Viewer](model-viewer/documentation/screenshot01.png)
 
@@ -29,7 +29,7 @@ For full browser acceptance, install Google Chrome, then run `npm run test:brows
 
 ## Model Sourcing
 
-Each page load resolves the source repository's public `main` commit once. It fetches `documentation/models/index.json` and the selected GLB at that immutable revision. Reload to discover newly published models without rebuilding the viewer. Models are sorted by full source path, so repeated filenames and historical variants remain distinct.
+Each page load resolves the source repository's public `main` commit once. It fetches `documentation/models/index.json` and the selected GLB at that immutable revision. Reload to discover newly published models without rebuilding the viewer. Navigation wraps from the first model to the last and from the last to the first, including while models are loading. Keyboard shortcuts leave text inputs and browser modifier shortcuts alone. Models are sorted by full source path, so repeated filenames and historical variants remain distinct.
 
 The source repository owns model exports, catalog generation, and metadata extraction. See its [export maintenance guide](https://github.com/SamuelAsherRivello/ai-skills-blender/blob/main/documentation/models/README.md). The catalog records provenance for each documented value. Measured viewport statistics are shown separately. Missing metadata is omitted; remote text is rendered as plain text.
 

@@ -12,7 +12,7 @@ The app SHALL display Model Viewer and fill the available browser viewport with 
 - **THEN** the canvas resizes, the scene remains correctly proportioned, and navigation stays accessible
 
 ### Requirement: Sequential model navigation
-The viewer SHALL provide keyboard-accessible Back and Next buttons, current filename, disambiguating source path, and position out of total. Entries SHALL have deterministic path ordering; Back at the first entry and Next at the last SHALL be disabled. Paired source/GLB files SHALL represent one model entry, while distinct source paths remain separate entries.
+The viewer SHALL provide keyboard-accessible Back and Next buttons, current filename, disambiguating source path, and position out of total. Entries SHALL have deterministic path ordering; Back at the first entry SHALL wrap to the last, and Next at the last SHALL wrap to the first. A/Left Arrow SHALL navigate back and D/Right Arrow SHALL navigate next, including with canvas focus. Navigation SHALL be available once the catalog is loaded, even while a model loads. Empty catalogs SHALL disable navigation; single-entry catalogs SHALL remain on that entry. Shortcuts SHALL ignore editable fields and Alt/Ctrl/Meta combinations. Paired source/GLB files SHALL represent one model entry, while distinct source paths remain separate entries.
 
 #### Scenario: Rapid navigation
 - **WHEN** the visitor navigates again before a previous load finishes

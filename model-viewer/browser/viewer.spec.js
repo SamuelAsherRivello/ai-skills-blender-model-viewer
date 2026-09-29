@@ -6,6 +6,84 @@ const ready = (page) =>
   expect(
     page.getByRole("button", { name: "Reset view", exact: true }),
   ).toBeEnabled({ timeout: 150000 });
+
+test("buttons and shortcuts wrap immediately, with safe empty and single-model behavior", async ({
+  page,
+}) => {
+  const models = [0, 1, 2].map((i) => ({
+    id: `examples/${i}.blend`,
+    sourcePath: `examples/${i}.blend`,
+    glbPath: `examples/${i}.glb`,
+    byteSize: 100,
+    title: `Model ${i}`,
+  }));
+  let entries = models;
+  await page.route(ref, (r) =>
+    r.fulfill({ json: { object: { sha: "a".repeat(40) } } }),
+  );
+  await page.route(raw + "**/documentation/models/index.json", (r) =>
+    r.fulfill({ json: { schemaVersion: 1, models: entries } }),
+  );
+  await page.route(raw + "**/*.glb", (r) =>
+    r.fulfill({
+      status: 503,
+      body: "Navigation must also work without a rendered model",
+    }),
+  );
+  await page.goto("./");
+  const back = page.getByRole("button", { name: "Back", exact: true }),
+    next = page.getByRole("button", { name: "Next", exact: true });
+  await expect(back).toBeEnabled();
+  await back.click();
+  await expect(
+    page.getByRole("heading", { name: "Model 2", exact: true }),
+  ).toBeVisible();
+  await next.click();
+  await expect(
+    page.getByRole("heading", { name: "Model 0", exact: true }),
+  ).toBeVisible();
+  await page.locator("canvas").focus();
+  for (const key of ["ArrowLeft", "a", "A"]) {
+    await page.keyboard.press(key);
+    await expect(
+      page.getByRole("heading", { name: "Model 2", exact: true }),
+    ).toBeVisible();
+    await page.keyboard.press(
+      key === "ArrowLeft" ? "ArrowRight" : key === "a" ? "d" : "D",
+    );
+    await expect(
+      page.getByRole("heading", { name: "Model 0", exact: true }),
+    ).toBeVisible();
+  }
+  await page.keyboard.press("Control+d");
+  await expect(
+    page.getByRole("heading", { name: "Model 0", exact: true }),
+  ).toBeVisible();
+  await page.evaluate(() => {
+    const input = document.createElement("input");
+    input.id = "test-input";
+    document.body.append(input);
+    input.focus();
+  });
+  await page.keyboard.press("a");
+  await page.keyboard.press("ArrowLeft");
+  await expect(
+    page.getByRole("heading", { name: "Model 0", exact: true }),
+  ).toBeVisible();
+  entries = models.slice(0, 1);
+  await page.reload();
+  await expect(back).toBeEnabled();
+  await back.click();
+  await next.click();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByTestId("position")).toHaveText("01 / 01");
+  entries = [];
+  await page.reload();
+  await expect(back).toBeDisabled();
+  await expect(next).toBeDisabled();
+  await page.keyboard.press("a");
+  await expect(page.getByTestId("position")).toHaveText("00 / 00");
+});
 test("every public model renders at one revision with correct metadata", async ({
   page,
   request,
@@ -40,7 +118,7 @@ test("every public model renders at one revision with correct metadata", async (
   await page.goto("./");
   await expect(
     page.getByRole("button", { name: "Back", exact: true }),
-  ).toBeDisabled();
+  ).toBeEnabled();
   for (let i = 0; i < catalog.models.length; i++) {
     const m = catalog.models[i];
     await expect(
@@ -75,7 +153,7 @@ test("every public model renders at one revision with correct metadata", async (
   }
   await expect(
     page.getByRole("button", { name: "Next", exact: true }),
-  ).toBeDisabled();
+  ).toBeEnabled();
   expect(modelRequests).toHaveLength(catalog.models.length);
   expect(
     modelRequests.every((url) => url.startsWith(raw + revision + "/")),
