@@ -1,0 +1,67 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      existing_version:
+        description: "Optional existing vX.Y.Z tag to retry deployment or roll back; blank creates next patch"
+        required: false
+        type: string
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: release-pages
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm run check:distribution
+      - name: Allocate or resume version
+        id: version
+        env:
+          EXISTING_VERSION: ${{ inputs.existing_version }}
+        run: node model-viewer/scripts/release.mjs
+      - name: Install exact release dependencies
+        run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm run check:distribution
+      - name: Package exact build
+        run: |
+          cp version.txt model-viewer/dist/version.txt
+          cd model-viewer/dist
+          zip -r ../../release.zip .
+      - name: Create release draft or update existing release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --draft --generate-notes --title "$TAG"
+          gh release upload "$TAG" release.zip --clobber
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: model-viewer/dist
+      - uses: actions/deploy-pages@v4
+        id: deployment
+      - name: Publish successful release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: gh release edit "$TAG" --draft=false

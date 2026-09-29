@@ -1,0 +1,8 @@
+schema: spec-driven
+context: |
+  Model Viewer: React/Vite and Babylon.js, app source/tests under model-viewer/.
+  Public model source: SamuelAsherRivello/ai-skills-blender, accessed by HTTP only.
+  Viewer releases contain no models. Source exports/catalog are maintained upstream.
+  Manual patch releases deploy matching builds to GitHub Pages.
+  Run npm test, npm run build, and npm run test:browser for validation.
+
