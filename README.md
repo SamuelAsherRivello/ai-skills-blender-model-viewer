@@ -2,63 +2,93 @@
 
 # Model Viewer
 
-A full-browser 3D gallery for the public [AI Skills for Blender collection](https://github.com/SamuelAsherRivello/ai-skills-blender). Browse scenes and historical variants with Back/Next, A/D, or the left/right arrow keys, orbit and zoom, play animations, and inspect filenames, geometry statistics, and documented metadata.
+- Interactive 3D gallery for [AI Skills for Blender](https://github.com/SamuelAsherRivello/ai-skills-blender).
+- Browse models, play animations, and inspect source metadata.
 
-![Model Viewer](model-viewer/documentation/screenshot01.png)
+## Images
+
+### Screenshots
+
+<a href="model-viewer/documentation/screenshot01.png"><img src="model-viewer/documentation/screenshot01.png" width="400" alt="Model Viewer displaying a Blender scene" /></a>
 
 ## Live Demo
 
-[Open Model Viewer](https://samuelasherrivello.github.io/ai-skills-blender-model-viewer/) · [Latest release](https://github.com/SamuelAsherRivello/ai-skills-blender-model-viewer/releases/latest)
+- [Open Model Viewer](https://samuelasherrivello.github.io/ai-skills-blender-model-viewer/)
+- [Latest release](https://github.com/SamuelAsherRivello/ai-skills-blender-model-viewer/releases/latest)
+
+## Table of Contents
+
+- [Images](#images)
+- [Live Demo](#live-demo)
+- [Getting Started](#getting-started)
+- [Project Details](#project-details)
+- [Credits](#credits)
 
 ## Getting Started
 
-Use Node.js 24 or later and npm. Run from the repository root:
+- Requires Node.js 24+, npm, internet access, and a WebGL browser.
+- Run commands from the repository root. No API key required.
 
-```sh
-npm ci
-npm run dev
-npm test
-npm run build
-npm run check:distribution
-npm run preview
-```
+### 🛠 Build Project
 
-Open the Vite URL at `/ai-skills-blender-model-viewer/`. Internet access and WebGL are required. No API key or environment file is needed.
+- Install dependencies: `npm ci`
+- Build: `npm run build`
+- Preview build: `npm run preview`
 
-For full browser acceptance, install Google Chrome, then run `npm run test:browser`. This checks every current public model, error/retry states, navigation, metadata, animation controls, and a narrow viewport. Set `VIEWER_URL` to test a deployed URL instead of the local Vite server. Public assets are downloaded by the browser; none are committed or bundled.
+### 🛠 Run Project
 
-## Model Sourcing
+- Start: `npm run dev`
+- Open the printed URL at `/ai-skills-blender-model-viewer/`.
 
-Each page load resolves the source repository's public `main` commit once. It fetches `documentation/models/index.json` and the selected GLB at that immutable revision. Reload to discover newly published models without rebuilding the viewer. Navigation wraps from the first model to the last and from the last to the first, including while models are loading. Keyboard shortcuts leave text inputs and browser modifier shortcuts alone. Models are sorted by full source path, so repeated filenames and historical variants remain distinct.
+### 🛠 Test Project
 
-The source repository owns model exports, catalog generation, and metadata extraction. See its [export maintenance guide](https://github.com/SamuelAsherRivello/ai-skills-blender/blob/main/documentation/models/README.md). The catalog records provenance for each documented value. Measured viewport statistics are shown separately. Missing metadata is omitted; remote text is rendered as plain text.
+- Unit tests: `npm test`
+- Distribution check: `npm run check:distribution`
+- Browser tests: `npm run test:browser` — requires Google Chrome.
+- Set `VIEWER_URL` to test a deployed site.
 
-The viewer uses React, Vite, and Babylon.js. Camera framing comes from the source scene when available, with a bounds-based fallback. Blender lighting and compositing are replaced with neutral viewer lighting. Procedural colors/normals use baked textures; toon shading is approximated with the authored palette. Export notes disclose these differences. The largest environment uses lossless meshopt compression and can take longer to load. A failed model can be retried or skipped.
+### 🛠 Release Version
 
-GitHub's public API limits and network outages produce visible retry states. Model downloads use `raw.githubusercontent.com`; Babylon's public CDN supplies the lighting environment and meshopt decoder, and Google Fonts supplies typography.
+- Push to `main`, then run **Release** in GitHub Actions.
+- Each release bumps the patch version and deploys its build to Pages.
+- Ordinary pushes run checks only; releases contain no models.
+- Re-run failed workflows to resume; set `existing_version` to `vX.Y.Z` for retry or rollback.
 
-## Releases
+## Project Details
 
-Normal pushes and pull requests run checks only. To publish:
+### 🎮 Controls
 
-1. Push reviewed changes to `main`.
-2. Run **Release** in GitHub Actions with `existing_version` blank.
-3. Tests, build, and distribution checks must pass before allocating the next patch version.
-4. The workflow commits `version.txt`, creates the matching annotated tag, builds that exact commit, uploads `release.zip`, deploys it to GitHub Pages, and publishes the release after deployment succeeds.
+- Previous / next: **Back / Next**, **A / D**, or **← / →**.
+- Navigation wraps in both directions, including while loading.
+- Drag to orbit; scroll to zoom. Reset, fullscreen, and animation playback controls are included.
 
-The app version, `version.txt`, tag, and release agree. Pages hosts the latest successful deployment. App releases contain only the application, never models or a copied model catalog.
+### 🧊 Models
 
-Re-run a failed workflow to resume its allocated version. To retry or roll back a specific release, dispatch **Release** with its existing `vX.Y.Z` tag. This checks out that tag without allocating another patch. Source models still resolve independently from the public source on reload.
+- Catalog and GLBs load from the public source at one revision per session.
+- Reload to discover new models; no app rebuild needed.
+- Source metadata includes provenance; viewport statistics are measured separately.
+- Export notes explain shading differences and detail limits.
+- [Export maintenance guide](https://github.com/SamuelAsherRivello/ai-skills-blender/blob/main/documentation/models/README.md)
 
-## Project Layout
+### 📝 Structure
 
-- `model-viewer/src/`: React interface, catalog validation, and Babylon lifecycle.
-- `model-viewer/test/`: catalog, distribution, release-allocation, and project checks.
-- `model-viewer/browser/`: real-browser acceptance against public assets.
-- `model-viewer/scripts/`: release version allocation and distribution guard.
-- `model-viewer/documentation/`: screenshot and delivery evidence.
-- `.github/workflows/`: checks and manual release/Pages deployment.
-- `openspec/`: project constraints and feature specifications.
+- `model-viewer/src/`: interface and renderer.
+- `model-viewer/test/`, `model-viewer/browser/`: automated checks.
+- `model-viewer/scripts/`: release and distribution tools.
+- `model-viewer/documentation/`: screenshots and [verification notes](model-viewer/documentation/verification.md).
+- `.github/workflows/`: checks and Pages releases.
+
+### 📦 AI
+
+- [AGENTS.md](AGENTS.md): repository guidance.
+- [OpenSpec](openspec/): specifications and change tracking.
+
+### 📦 Packages
+
+- React: interface.
+- Babylon.js: 3D rendering and animation.
+- Vite: development and builds.
+- Playwright: browser testing.
 
 ## Credits
 
